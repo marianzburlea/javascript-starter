@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>tic tac toe</title>
+    <style>
+      .game {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        grid-gap: 16px;
+        width: fit-content
+      }
+
+      .tile {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 5rem;
+        height: 5rem;
+        background-color: lightblue;
+        font-size: 2rem;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <script>
+      // initial turn
+      let step = 0
+      let winMatch = false
+
+      // generate title
+      const title = document.createElement('h1')
+      title.innerText = 'Tic Tac Toe'
+
+      // generate board
+      const game = document.createElement('div')
+      game.className = 'game'
+
+      // generate tile list
+      let tileList = Array.from({length: 9}, (_, k) => ({
+        id: `tile-${k}`,
+        value: '?'
+      }))
+
+      const possibleWinList = [
+          '012',
+          '345',
+          '678',
+
+          '036',
+          '147',
+          '258',
+
+          '048',
+          '246',
+        ]
+
+      const checkForWin = list => {
+        const result = possibleWinList
+        .map(line => [...new Set(line
+            .split('')
+            .map(index => list[index].value)
+            .filter(Boolean))]
+        )
+        .filter(arr => arr.length === 1 && arr[0] !== '?')
+
+        if (result.length) {
+          const winElement = document.createElement('h2')
+          winElement.innerText = `${result[0]} won the game!`
+          document.body.appendChild(winElement)
+          winMatch = true
+        }
+      }
+
+      tileList.forEach(tile => {
+        const tileElement = document.createElement('button')
+        tileElement.className = 'tile'
+        tileElement.id = tile.id
+        tileElement.innerText = tile.value
+
+        tileElement.addEventListener('click', (event) => {
+          if (tileElement.innerText === '?' && !winMatch) {
+            const index = +tileElement.id.split('-')[1]
+            tileList[index].value = step % 2 ? '0' : 'x'
+
+
+            tileElement.innerText = step % 2 ? '0' : 'x'
+            step++
+            checkForWin(tileList)
+          }
+
+        })
+
+        game.appendChild(tileElement)
+      })
+
+      document.body.appendChild(title)
+      document.body.appendChild(game)
+    </script>
+  </body>
+</html>
